@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class testToken {
     @Test
-    public void testTokenJob() {
+    public void testTokenJob() throws InterruptedException {
         JsonPath response = RestAssured
                 .given()
                 .when()
@@ -17,19 +17,26 @@ public class testToken {
                 .jsonPath ();
         String newtoken = response.get("token");
 
-        System.out.println(newtoken);
-
         Map<String, String> data = new HashMap<>();
         data.put ("token", newtoken);
         Response responseWithToken = RestAssured
                 .given()
-                .body(data)
+                .params(data)
                 .when()
                 .get("https://playground.learnqa.ru/ajax/api/longtime_job")
                 .andReturn();
-        response.prettyPrint();
+        responseWithToken.prettyPrint();
+        Thread.sleep(16000);
 
-
+        Map<String, String> data2 = new HashMap<>();
+        data.put ("token", newtoken);
+        Response responseEndOfJob = RestAssured
+                .given()
+                .params(data)
+                .when()
+                .get("https://playground.learnqa.ru/ajax/api/longtime_job")
+                .andReturn();
+        responseEndOfJob.prettyPrint();
 
     }
 }
